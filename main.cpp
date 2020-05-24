@@ -1,20 +1,21 @@
 #include <stdlib.h>
+#include <iostream>
 
-// imgui headers
 #include <imgui.h>
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl2.h"
 
 #include <GLFW/glfw3.h>
 
-bool RCCppInit();
-void RCCppCleanup();
-void RCCppUpdate();
-
-void WindowResizeCallback( GLFWwindow* window, int width, int height ){  }
-void WindowPosCallback( GLFWwindow* window, int xpos, int ypos ){  }
+void WindowResizeCallback( GLFWwindow* window, int width, int height ) {
+    std::cout << "Resize handled!\n";
+}
+void WindowPosCallback( GLFWwindow* window, int xpos, int ypos ) {
+    std::cout << "Window position change handled!\n";
+}
 void KeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods )
 {
+    std::cout << "Key has been handled! " << key << " mode: " << action << "\n";
     ImGui_ImplGlfw_KeyCallback( window, key, scancode, action, mods );
 }
 void CharCallback( GLFWwindow* window, unsigned int character )
@@ -25,7 +26,7 @@ void MouseButtonCallback( GLFWwindow* window, int button, int action, int mods )
 {
     ImGui_ImplGlfw_MouseButtonCallback( window, button, action, mods );
 }
-void MousePosCallback( GLFWwindow* window, double x, double y ){  }
+void MousePosCallback( GLFWwindow* window, double x, double y ) {  }
 void MouseWheelCallback( GLFWwindow* window, double x, double y )
 {
     ImGui_ImplGlfw_ScrollCallback( window, x, y );
@@ -37,7 +38,7 @@ int main( int argc, const char * argv[] )
         exit(1);
 
     GLFWwindow* window = glfwCreateWindow(1280, 720, "This is a simple GLFW Example", NULL, NULL);
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(window); // Set context
     glfwSwapInterval(1); // Enable vsync
 
     // Power save - ensure callbacks point to the correct place
@@ -59,7 +60,9 @@ int main( int argc, const char * argv[] )
     // Setup style
     ImGui::StyleColorsDark();
 
-    ImVec4 clear_color = ImColor(114, 144, 154);
+    std::cout << "The application is ready to loop!\n";
+
+    ImVec4 clear_color = ImColor(50, 50, 50);
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
