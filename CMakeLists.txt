@@ -5,6 +5,7 @@ project( genome )
 find_package( OpenGL REQUIRED )
 
 include_directories( "glfw/include" )
+include_directories( "Vulkan-Headers/include" )
 
 include_directories("imgui")
 include_directories("imgui/examples")

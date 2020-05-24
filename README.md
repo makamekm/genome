@@ -20,6 +20,10 @@ or to hard rebuild
 rm -rf ./* && cmake .. && make all
 ```
 
+```
+rm -rf ./build/*
+```
+
 ### Start
 
 ```

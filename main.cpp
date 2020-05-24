@@ -1,21 +1,22 @@
 #include <stdlib.h>
 #include <iostream>
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 #include <imgui.h>
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl2.h"
 
-#include <GLFW/glfw3.h>
-
 void WindowResizeCallback( GLFWwindow* window, int width, int height ) {
-    std::cout << "Resize handled!\n";
+    std::cout << "Resize handled!" << std::endl;
 }
 void WindowPosCallback( GLFWwindow* window, int xpos, int ypos ) {
-    std::cout << "Window position change handled!\n";
+    std::cout << "Window position change handled!" << std::endl;
 }
 void KeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods )
 {
-    std::cout << "Key has been handled! " << key << " mode: " << action << "\n";
+    std::cout << "Key has been handled! " << key << " mode: " << action << std::endl;
     ImGui_ImplGlfw_KeyCallback( window, key, scancode, action, mods );
 }
 void CharCallback( GLFWwindow* window, unsigned int character )
@@ -34,14 +35,21 @@ void MouseWheelCallback( GLFWwindow* window, double x, double y )
 
 int main( int argc, const char * argv[] )
 {
-    if (!glfwInit())
+    if (!glfwInit()) {
+		std::cout << "GLFW not initialized." << std::endl;
         exit(1);
+    }
+    
+    if (glfwVulkanSupported())
+    {
+        std::cout << "Vulcan is available!" << std::endl;
+    }
 
     GLFWwindow* window = glfwCreateWindow(1280, 720, "This is a simple GLFW Example", NULL, NULL);
     glfwMakeContextCurrent(window); // Set context
     glfwSwapInterval(1); // Enable vsync
 
-    // Power save - ensure callbacks point to the correct place
+    // Set window callbacks
     glfwSetWindowSizeCallback( window, WindowResizeCallback );
     glfwSetWindowPosCallback( window, WindowPosCallback );
     glfwSetKeyCallback( window, KeyCallback );
@@ -60,7 +68,7 @@ int main( int argc, const char * argv[] )
     // Setup style
     ImGui::StyleColorsDark();
 
-    std::cout << "The application is ready to loop!\n";
+    std::cout << "The application is ready to loop!" << std::endl;
 
     ImVec4 clear_color = ImColor(50, 50, 50);
     while (!glfwWindowShouldClose(window))
@@ -74,7 +82,7 @@ int main( int argc, const char * argv[] )
 
         ImGui::SetNextWindowPos(ImVec2(50,400), ImGuiCond_Appearing );
         ImGui::SetNextWindowSize(ImVec2(0,0), ImGuiCond_Always );
-        ImGui::Begin("RCCppMainLoop Window" );
+        ImGui::Begin("The Development Window" );
         ImGui::Text("You can change Window's code at runtime!");
         ImGui::End();
 
