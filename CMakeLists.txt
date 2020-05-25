@@ -7,6 +7,11 @@ find_package( OpenGL REQUIRED )
 include_directories( "glfw/include" )
 include_directories( "Vulkan-Headers/include" )
 
+IF (APPLE)
+    link_directories($ENV{VULKAN_SDK}/lib)
+    include_directories($ENV{VULKAN_SDK}/include)
+ENDIF()
+
 include_directories("imgui")
 include_directories("imgui/examples")
 include_directories( ${OPENGL_INCLUDE_DIRS} )

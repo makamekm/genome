@@ -40,9 +40,10 @@ int main( int argc, const char * argv[] )
         exit(1);
     }
     
-    if (glfwVulkanSupported())
+    if (!glfwVulkanSupported())
     {
-        std::cout << "Vulcan is available!" << std::endl;
+        std::cout << "Vulcan is not available!" << std::endl;
+        exit(1);
     }
 
     GLFWwindow* window = glfwCreateWindow(1280, 720, "This is a simple GLFW Example", NULL, NULL);
