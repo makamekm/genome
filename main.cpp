@@ -42,7 +42,7 @@ int main( int argc, const char * argv[] )
     
     if (!glfwVulkanSupported())
     {
-        std::cout << "Vulcan is not available!" << std::endl;
+        std::cout << "Vulkan API is not available!" << std::endl;
         exit(1);
     }
 
