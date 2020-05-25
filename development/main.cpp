@@ -19,7 +19,7 @@ namespace Development {
 		delete profiler;
 	}
 
-	void AfterLoop()
+	void Finish()
 	{
 		// Nothing here
 	}

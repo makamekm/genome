@@ -155,10 +155,10 @@ int main( int argc, const char * argv[] )
             glfwSwapBuffers(window);
         }
 
-        Production::AfterLoop();
+        Production::Finish();
 
         #ifdef DEVELOPMENT_MODE
-        Development::AfterLoop();
+        Development::Finish();
         #endif
     }
 

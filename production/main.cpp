@@ -22,7 +22,7 @@ namespace Production {
 		delete taskManager;
 	}
 
-	void AfterLoop()
+	void Finish()
 	{
 		taskManager->EndFrame();
 	}

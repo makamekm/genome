@@ -7,7 +7,7 @@ namespace Development {
   void Destroy();
 
   // After Loop Development
-  void AfterLoop();
+  void Finish();
 
   // Loop Development
   void Loop(const int &frameRate, const double &frameTime);

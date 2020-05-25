@@ -12,7 +12,7 @@ namespace Production {
   void Destroy();
 
   // After Loop Production
-  void AfterLoop();
+  void Finish();
 
   // Loop Production
   void Loop(const int &frameRate, const double &frameTime);
