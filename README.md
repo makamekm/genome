@@ -41,7 +41,7 @@ nodemon --delay 500ms --signal SIGHUP --ignore build/ -e h,cpp,txt --exec "cd bu
 nodemon --signal SIGHUP --watch ./build/genome --exec "./build/genome"
 ```
 
-# MacOS Vulcan Issue
+# MacOS Vulkan API Issue
 
 Download SDK (https://vulkan.lunarg.com/sdk/home) and unzip to `/Users/USER/vulkansdk`.
 
