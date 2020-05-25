@@ -24,6 +24,10 @@ set( BUILD_EXAMPLES OFF CACHE BOOL  "RCCpp libsonly" )
 
 add_subdirectory( glfw )
 
+if($ENV{DEVELOPMENT_MODE})
+    add_definitions(-DDEVELOPMENT_MODE)
+endif()
+
 if( UNIX )
     SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 endif()

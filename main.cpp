@@ -8,7 +8,10 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl2.h"
 
-#include "components/monitoring/framerate.window.h"
+#ifdef DEVELOPMENT_MODE
+#include "components/development/main.h"
+#endif
+
 #include "components/style/style.h"
 
 // Catch Main Window Events
@@ -101,6 +104,11 @@ int main( int argc, const char * argv[] )
     double frameTime = 0;
 
     ImVec4 clear_color = ImColor(0, 0, 0);
+
+    #ifdef DEVELOPMENT_MODE
+    Development::Init();
+    #endif
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -118,10 +126,9 @@ int main( int argc, const char * argv[] )
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            Monitoring::RenderFramerateWindow(frameRate, frameTime);
-            Monitoring::RenderTimelineWindow();
-
-            ImGui::ShowDemoWindow();
+            #ifdef DEVELOPMENT_MODE
+            Development::Loop(frameRate, frameTime);
+            #endif
         }
 
         // --- Rendering ---
@@ -129,6 +136,11 @@ int main( int argc, const char * argv[] )
             glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
             glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            #ifdef DEVELOPMENT_MODE
+            Development::Render(frameRate, frameTime);
+            #endif
+
             ImGui::Render();
             ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
