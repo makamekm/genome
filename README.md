@@ -2,10 +2,12 @@
 
 This is a project that was made for experiments with 3D in C++.
 
+# Building
+
 ## Prebuild
 
 ```
-mkdir build && cd build
+rm -rf ./build && mkdir build && cd build
 ```
 
 ## Build
@@ -24,16 +26,17 @@ rm -rf ./* && cmake .. && make all
 rm -rf ./build/*
 ```
 
-### Start
+## Start
 
 ```
 ./genome
 ```
 
-## Development Mode
+# Development
 
 ```
 sudo npm i -g nodemon
+rm -rf ./build && mkdir build
 nodemon --delay 500ms --signal SIGHUP --ignore build/ -e h,cpp,txt --exec "cd build && cmake .. && make all"
 nodemon --signal SIGHUP --watch ./build/genome --exec "./build/genome"
 ```
