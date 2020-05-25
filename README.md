@@ -33,7 +33,7 @@ rm -rf ./build/*
 ## Development Mode
 
 sudo npm i -g nodemon
-nodemon --delay 500ms --ignore build/ -e h,cpp --exec "cd build && cmake .. && make all"
+nodemon --delay 500ms --ignore build/ -e h,cpp,txt --exec "cd build && cmake .. && make all"
 nodemon --watch ./build/genome --exec "./build/genome"
 
 ## MacOS Vulcan

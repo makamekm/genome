@@ -8,6 +8,9 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl2.h"
 
+#include "components/monitoring/framerate.window.h"
+
+// Catch Main Window Events
 void WindowResizeCallback( GLFWwindow* window, int width, int height ) {
     std::cout << "Resize handled!" << std::endl;
 }
@@ -33,19 +36,37 @@ void MouseWheelCallback( GLFWwindow* window, double x, double y )
     ImGui_ImplGlfw_ScrollCallback( window, x, y );
 }
 
+// Measure speed
+void measureSpeed(int &frameCount, double &currentTime, double &previousTime, int &frameRate, double &frameTime) {
+    currentTime = glfwGetTime();
+    frameCount++;
+
+    // If a second has passed.
+    if ( currentTime - previousTime >= 1.0 )
+    {
+        frameRate = frameCount;
+        frameTime = 1000.0/double(frameCount);
+        frameCount = 0;
+        previousTime = currentTime;
+    }
+}
+
 int main( int argc, const char * argv[] )
 {
+    // Check GLFW
     if (!glfwInit()) {
 		std::cout << "GLFW not initialized." << std::endl;
         exit(1);
     }
     
+    // Check Vulkan
     if (!glfwVulkanSupported())
     {
         std::cout << "Vulkan API is not available!" << std::endl;
         exit(1);
     }
 
+    // Create Main Window
     GLFWwindow* window = glfwCreateWindow(1280, 720, "This is a simple GLFW Example", NULL, NULL);
     glfwMakeContextCurrent(window); // Set context
     glfwSwapInterval(1); // Enable vsync
@@ -63,31 +84,46 @@ int main( int argc, const char * argv[] )
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
+    // Init OpenGL
     ImGui_ImplGlfw_InitForOpenGL(window, false);
     ImGui_ImplOpenGL2_Init();
 
     // Setup style
-    ImGui::StyleColorsDark();
+    ImGui::StyleColorsClassic();
 
     std::cout << "The application is ready to loop!" << std::endl;
+
+    double previousTime = glfwGetTime();
+    double currentTime = 0;
+    int frameCount = 0;
+    int frameRate = 0;
+    double frameTime = 0;
 
     ImVec4 clear_color = ImColor(50, 50, 50);
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
 
+        // --- Monitoring ---
+
+        // Measure speed
+        measureSpeed(frameCount, currentTime, previousTime, frameRate, frameTime);
+
+        // --- Logistic ---
+
         // Start the Dear ImGui frame
-        ImGui_ImplOpenGL2_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        {
+            ImGui_ImplOpenGL2_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
 
-        ImGui::SetNextWindowPos(ImVec2(50,400), ImGuiCond_Appearing );
-        ImGui::SetNextWindowSize(ImVec2(0,0), ImGuiCond_Always );
-        ImGui::Begin("The Development Window" );
-        ImGui::Text("You can change Window's code at runtime!");
-        ImGui::End();
+            Monitoring::RenderFramerateWindow(frameRate, frameTime);
+            Monitoring::RenderTimelineWindow();
 
-        // Rendering
+            ImGui::ShowDemoWindow();
+        }
+
+        // --- Rendering ---
         {
             glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
             glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
@@ -98,7 +134,7 @@ int main( int argc, const char * argv[] )
         }
     }
 
-    // Cleanup
+    // Cleanup the program
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

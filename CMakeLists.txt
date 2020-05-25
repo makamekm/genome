@@ -29,29 +29,35 @@ if( UNIX )
 endif()
 
 if( APPLE )
-    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ -Wno-deprecated-declarations" )
 endif()
 
 if( WIN32 )
     SET( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup" )
 endif()
+     
+file(GLOB SRC_VENDOR_FILES
+    ${PROJECT_SOURCE_DIR}/imgui/*.cpp
+    ${PROJECT_SOURCE_DIR}/imgui/*.h
+)
 
-set( SRC_FILES
-     imgui/imgui.h
-     imgui/imgui.cpp
-     imgui/imgui_internal.h
-     imgui/imgui_demo.cpp
-     imgui/imgui_draw.cpp
-     imgui/imgui_widgets.cpp
-     imgui/imconfig.h
+set( SRC_VENDOR_IMGUI_FILES
      imgui/examples/imgui_impl_glfw.h
      imgui/examples/imgui_impl_glfw.cpp
      imgui/examples/imgui_impl_opengl2.h
      imgui/examples/imgui_impl_opengl2.cpp
-     main.cpp
-     )
+)
 
-add_executable( genome ${SRC_FILES} )
+set( MAIN_FILE
+     main.cpp
+)
+     
+file(GLOB SRC_COMPONENTS_FILES
+    ${PROJECT_SOURCE_DIR}/components/**/*.cpp
+    ${PROJECT_SOURCE_DIR}/components/**/*.h
+)
+
+add_executable( genome ${SRC_VENDOR_FILES} ${SRC_VENDOR_IMGUI_FILES} ${SRC_COMPONENTS_FILES} ${MAIN_FILE} )
 target_link_libraries( genome ${OPENGL_LIBRARIES} glfw ${GLFW_LIBRARIES} )
 if( MSVC )
     if( ${CMAKE_VERSION} VERSION_LESS "3.6.0" )
