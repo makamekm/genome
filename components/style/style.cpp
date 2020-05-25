@@ -1,6 +1,5 @@
 #include <imgui.h>
 #include <GLFW/glfw3.h>
-#include "../plot-var/plot-var.h"
 
 namespace ImGui {
 	void SetDarkTheme()

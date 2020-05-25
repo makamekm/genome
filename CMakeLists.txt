@@ -1,6 +1,11 @@
-cmake_minimum_required( VERSION 2.8 )
+cmake_minimum_required( VERSION 3.0 )
 
-project( genome )
+PROJECT(genome CXX)
+
+set(CMAKE_MAJOR_VERSION "0")
+set(CMAKE_MINOR_VERSION "0")
+set(CMAKE_PATCH_VERSION "0")
+set(CMAKE_VERSION_STRING "${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}")
 
 find_package( OpenGL REQUIRED )
 
@@ -57,14 +62,29 @@ set( MAIN_FILE
 )
      
 file(GLOB SRC_COMPONENTS_FILES
+    ${PROJECT_SOURCE_DIR}/components/**/**/*.cpp
+    ${PROJECT_SOURCE_DIR}/components/**/**/*.h
     ${PROJECT_SOURCE_DIR}/components/**/*.cpp
     ${PROJECT_SOURCE_DIR}/components/**/*.h
+    ${PROJECT_SOURCE_DIR}/components/*.cpp
+    ${PROJECT_SOURCE_DIR}/components/*.h
 )
 
-add_executable( genome ${SRC_VENDOR_FILES} ${SRC_VENDOR_IMGUI_FILES} ${SRC_COMPONENTS_FILES} ${MAIN_FILE} )
+if($ENV{DEVELOPMENT_MODE})
+    file(GLOB DEVELOPMENT_SRC_COMPONENTS_FILES
+        ${PROJECT_SOURCE_DIR}/development/**/**/*.cpp
+        ${PROJECT_SOURCE_DIR}/development/**/**/*.h
+        ${PROJECT_SOURCE_DIR}/development/**/*.cpp
+        ${PROJECT_SOURCE_DIR}/development/**/*.h
+        ${PROJECT_SOURCE_DIR}/development/*.cpp
+        ${PROJECT_SOURCE_DIR}/development/*.h
+    )
+endif()
+
+add_executable( genome ${SRC_VENDOR_FILES} ${SRC_VENDOR_IMGUI_FILES} ${SRC_COMPONENTS_FILES} ${DEVELOPMENT_SRC_COMPONENTS_FILES} ${MAIN_FILE} )
 
 add_custom_command(
-    TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    TARGET genome POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
             ${PROJECT_SOURCE_DIR}/resources/verdana.ttf
             ${CMAKE_CURRENT_BINARY_DIR}/resources/verdana.ttf

@@ -9,7 +9,7 @@
 #include "imgui_impl_opengl2.h"
 
 #ifdef DEVELOPMENT_MODE
-#include "components/development/main.h"
+#include "development/main.h"
 #endif
 
 #include "components/style/style.h"
