@@ -1,7 +1,7 @@
 namespace Monitoring {
   // Render IMGUI framerate window
-  void	RenderFramerateWindow(const int &frameRate, const double &frameTime, const char* name = "Monitoring::Framerate");
+  void RenderFramerateWindow(const int &frameRate, const double &frameTime, const char* name = "Monitoring::Framerate");
 
   // Render IMGUI timeline window
-  void	RenderTimelineWindow(const char* name = "Monitoring::Timeline");
+  void RenderTimelineWindow(const char* name = "Monitoring::Timeline");
 }
