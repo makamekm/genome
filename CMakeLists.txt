@@ -10,6 +10,7 @@ set(CMAKE_VERSION_STRING "${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_
 find_package( OpenGL REQUIRED )
 
 include_directories( "glfw/include" )
+include_directories( "glm/glm" )
 include_directories( "Vulkan-Headers/include" )
 
 IF (APPLE)
@@ -81,7 +82,16 @@ if($ENV{DEVELOPMENT_MODE})
     )
 endif()
 
-add_executable( genome ${SRC_VENDOR_FILES} ${SRC_VENDOR_IMGUI_FILES} ${SRC_COMPONENTS_FILES} ${DEVELOPMENT_SRC_COMPONENTS_FILES} ${MAIN_FILE} )
+file(GLOB PRODUCTION_SRC_COMPONENTS_FILES
+    ${PROJECT_SOURCE_DIR}/production/**/**/*.cpp
+    ${PROJECT_SOURCE_DIR}/production/**/**/*.h
+    ${PROJECT_SOURCE_DIR}/production/**/*.cpp
+    ${PROJECT_SOURCE_DIR}/production/**/*.h
+    ${PROJECT_SOURCE_DIR}/production/*.cpp
+    ${PROJECT_SOURCE_DIR}/production/*.h
+)
+
+add_executable( genome ${SRC_VENDOR_FILES} ${SRC_VENDOR_IMGUI_FILES} ${SRC_COMPONENTS_FILES} ${PRODUCTION_SRC_COMPONENTS_FILES} ${DEVELOPMENT_SRC_COMPONENTS_FILES} ${MAIN_FILE} )
 
 add_custom_command(
     TARGET genome POST_BUILD

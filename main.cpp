@@ -12,6 +12,8 @@
 #include "development/main.h"
 #endif
 
+#include "production/main.h"
+
 #include "components/style/style.h"
 
 // Catch Main Window Events
@@ -71,6 +73,7 @@ int main( int argc, const char * argv[] )
     }
 
     // Create Main Window
+    // GLFWwindow* window = glfwCreateWindow(1280, 720, "This is a simple GLFW Example", glfwGetPrimaryMonitor(), NULL);
     GLFWwindow* window = glfwCreateWindow(1280, 720, "This is a simple GLFW Example", NULL, NULL);
     glfwMakeContextCurrent(window); // Set context
     glfwSwapInterval(1); // Enable vsync
@@ -109,45 +112,64 @@ int main( int argc, const char * argv[] )
     Development::Init();
     #endif
 
+    Production::Init();
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
 
         // --- Monitoring ---
 
-        // Measure speed
         measureSpeed(frameCount, currentTime, previousTime, frameRate, frameTime);
-
-        // --- Logistic ---
 
         // Start the Dear ImGui frame
         {
             ImGui_ImplOpenGL2_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-
-            #ifdef DEVELOPMENT_MODE
-            Development::Loop(frameRate, frameTime);
-            #endif
         }
 
-        // --- Rendering ---
+        // --- Loop ---
+
+        Production::Loop(frameRate, frameTime);
+
+        // Run Loop
+        #ifdef DEVELOPMENT_MODE
+        Development::Loop(frameRate, frameTime);
+        #endif
+
+        // --- Render ---
         {
             glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
             glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            Production::Render();
+
             #ifdef DEVELOPMENT_MODE
-            Development::Render(frameRate, frameTime);
+            Development::Render();
             #endif
 
             ImGui::Render();
             ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
         }
+
+        Production::AfterLoop();
+
+        #ifdef DEVELOPMENT_MODE
+        Development::AfterLoop();
+        #endif
     }
 
-    // Cleanup the program
+    // --- Cleanup ---
+
+    Production::Destroy();
+
+    #ifdef DEVELOPMENT_MODE
+    Development::Destroy();
+    #endif
+
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
