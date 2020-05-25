@@ -38,6 +38,10 @@ nodemon --watch ./build/genome --exec "./build/genome"
 
 ## MacOS Vulcan
 
+Download SDK (https://vulkan.lunarg.com/sdk/home) and unzip to `/Users/USER/vulkansdk`.
+
+Set there environment variables before building:
+
 ```
 export VULKAN_SDK=/Users/$USER/vulkansdk/macOS
 export PATH=$VULKAN_SDK/bin:$PATH
