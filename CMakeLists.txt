@@ -58,7 +58,16 @@ file(GLOB SRC_COMPONENTS_FILES
 )
 
 add_executable( genome ${SRC_VENDOR_FILES} ${SRC_VENDOR_IMGUI_FILES} ${SRC_COMPONENTS_FILES} ${MAIN_FILE} )
+
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${PROJECT_SOURCE_DIR}/resources/verdana.ttf
+            ${CMAKE_CURRENT_BINARY_DIR}/resources/verdana.ttf
+)
+
 target_link_libraries( genome ${OPENGL_LIBRARIES} glfw ${GLFW_LIBRARIES} )
+
 if( MSVC )
     if( ${CMAKE_VERSION} VERSION_LESS "3.6.0" )
         message( "\n\t[ WARNING ]\n\n\tCMake version lower than 3.6.\n\n\t - Please update CMake and rerun; OR\n\t - Manually set 'genome' as StartUp Project in Visual Studio.\n" )
