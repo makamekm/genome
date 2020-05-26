@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string>
+#include <functional>
 
 #pragma once
 
@@ -16,7 +17,7 @@ struct TaskProfile {
 
 class TaskManager {
   public:
-    TaskManager();
+    TaskManager(unsigned int nonFramedThreads = 1);
     int GetLastFrameGpuProfilerData();
     int GetLastFrameCpuProfilerData();
     int GetThreadsCount();
@@ -26,4 +27,9 @@ class TaskManager {
     void Destroy();
     void Start();
     void End();
+    void AddJob(
+      std::function<void(const double& time, const unsigned int& workerIndex)> job,
+      const unsigned int &preferedIndex = 0,
+      const bool &nonFramedThread = false
+    );
 };

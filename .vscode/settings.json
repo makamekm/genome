@@ -58,6 +58,7 @@
     "ios": "cpp",
     "thread": "cpp",
     "mutex": "cpp",
-    "condition_variable": "cpp"
+    "condition_variable": "cpp",
+    "*.cpp_": "cpp"
   }
 }

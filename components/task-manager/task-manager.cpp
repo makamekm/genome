@@ -2,6 +2,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <functional>
@@ -12,12 +13,9 @@ static bool isRunning = false;
 static double framePassedTime = 0.0f;
 
 class WorkerThread {
-  // int[10] coroutines;
   private:
-  unsigned int index = 0;
-  std::thread thread;
-  std::vector<std::function<void(double time)>> jobs;
-  double previousTime = glfwGetTime();
+    std::thread thread;
+    double previousTime = glfwGetTime();
 
   public:
     WorkerThread(int index):
@@ -29,6 +27,8 @@ class WorkerThread {
     bool nonFramedThread = false;
     bool readyToExecute = false;
     bool processed = true;
+    unsigned int index = 0;
+    std::vector<std::function<void(const double& time, const unsigned int& workerIndex)>> jobs;
 
     void Run() {
       thread = std::thread(&WorkerThread::RunTask, this);
@@ -47,7 +47,7 @@ class WorkerThread {
         double nowTime = glfwGetTime();
         double timePassed = nowTime - previousTime;
         for (auto& job : jobs) {
-          job(timePassed);
+          job(timePassed, this->index);
         }
         previousTime = nowTime;
         readyToExecute = false;
@@ -56,7 +56,7 @@ class WorkerThread {
       // std::cout << "Thread stopped: " << index << std::endl;
     }
 
-    void AddJob(std::function<void(double time)> job) {
+    void AddJob(std::function<void(const double& time, const unsigned int& workerIndex)> job) {
       jobs.push_back(job);
     }
 };
@@ -74,25 +74,63 @@ void countThreads() {
   }
 } 
 
-void createThreads() {
+void createThreads(unsigned int& nonFramedThreads) {
   threads = new WorkerThread*[threadsCount];
 
-  for (unsigned int i = 0; i < threadsCount; i++) {
+  for (unsigned int i = 0; i < nonFramedThreads; i++) {
+    threads[i] = new WorkerThread(i);
+    threads[i]->nonFramedThread = true;
+  }
+
+  for (unsigned int i = nonFramedThreads; i < threadsCount; i++) {
     threads[i] = new WorkerThread(i);
   }
 } 
 
-TaskManager::TaskManager() {
+TaskManager::TaskManager(unsigned int nonFramedThreads) {
   countThreads();
-  createThreads();
+  createThreads(nonFramedThreads);
 
-  threads[0]->AddJob([](double passed) {
-    // std::cout << "Hi from thread!" << passed << std::endl;
+  this->AddJob([](const double& time, const unsigned int& workerIndex) {
+    // std::cout << "Hi from thread!" << workerIndex << std::endl;
   });
 }
 
 int TaskManager::GetThreadsCount() {
   return threadsCount;
+}
+
+void TaskManager::AddJob(
+  std::function<void(const double& time, const unsigned int& workerIndex)> job,
+  const unsigned int &preferedIndex,
+  const bool &nonFramedThread 
+) {
+  std::vector<WorkerThread*> candidates;
+
+  for (unsigned int i = 0; i < threadsCount; i++) {
+    if (threads[i]->nonFramedThread == nonFramedThread) {
+      candidates.push_back(threads[i]);
+    }
+  }
+
+  std::sort(candidates.begin(), candidates.end(), [preferedIndex](WorkerThread *a, WorkerThread *b){
+    return a->jobs.size() < b->jobs.size(); 
+  });
+
+  if (preferedIndex > 0) {
+    for (auto* candidate : candidates) {
+      if (candidate->index >= preferedIndex) {
+        candidate->AddJob(job);
+        return;
+      }
+    }
+  }
+
+  if (candidates.size() > 0) {
+    candidates.at(0)->AddJob(job);
+  } else {
+    std::cout << "Job has not been pushed!" << std::endl;
+  }
 }
 
 int TaskManager::GetLastFrameGpuProfilerData() {
