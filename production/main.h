@@ -12,10 +12,10 @@ namespace Production {
   void Destroy();
 
   // After Loop Production
-  void Finish();
+  void FinishLoop();
 
   // Loop Production
-  void Loop(const double &frameTime);
+  void StartLoop(const double &frameTime);
 
   // Render Production
   void Render();

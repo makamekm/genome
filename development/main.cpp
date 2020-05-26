@@ -39,12 +39,12 @@ namespace Development {
 		delete profiler;
 	}
 
-	void Finish()
+	void FinishLoop()
 	{
 		// Nothing here
 	}
 
-	void Loop(const double &framePassedTime)
+	void StartLoop(const double &framePassedTime)
 	{
 		measureSpeed(frameCount, currentTime, previousTime, frameRate, frameTime);
     Monitoring::RenderFramerateWindow(frameRate, frameTime);

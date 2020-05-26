@@ -7,10 +7,10 @@ namespace Development {
   void Destroy();
 
   // After Loop Development
-  void Finish();
+  void FinishLoop();
 
   // Loop Development
-  void Loop(const double &framePassedTime);
+  void StartLoop(const double &framePassedTime);
 
   // Render Development
   void Render();

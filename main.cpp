@@ -121,11 +121,17 @@ int main( int argc, const char * argv[] )
 
         // --- Loop ---
 
-        Production::Loop(framePassedTime);
+        Production::StartLoop(framePassedTime);
 
         // Run Loop
         #ifdef DEVELOPMENT_MODE
-        Development::Loop(framePassedTime);
+        Development::StartLoop(framePassedTime);
+        #endif
+
+        Production::FinishLoop();
+
+        #ifdef DEVELOPMENT_MODE
+        Development::FinishLoop();
         #endif
 
         // --- Render ---
@@ -144,12 +150,6 @@ int main( int argc, const char * argv[] )
             ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
         }
-
-        Production::Finish();
-
-        #ifdef DEVELOPMENT_MODE
-        Development::Finish();
-        #endif
     }
 
     // --- Cleanup ---

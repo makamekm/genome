@@ -25,12 +25,12 @@ namespace Production {
 		delete taskManager;
 	}
 
-	void Finish()
+	void FinishLoop()
 	{
 		taskManager->EndFrame();
 	}
 
-	void Loop(const double &framePassedTime)
+	void StartLoop(const double &framePassedTime)
 	{
 		taskManager->BeginFrame(framePassedTime);
 	}

@@ -105,10 +105,12 @@ int TaskManager::GetLastFrameCpuProfilerData() {
 
 void TaskManager::EndFrame() {
   for (int i = 0; i < threadsCount; i++) {
-    std::unique_lock<std::mutex> lk(threads[i]->m);
-    threads[i]->cv.wait(lk, [&]{
-      return threads[i]->processed;
-    });
+    if (!threads[i]->nonFramedThread) {
+      std::unique_lock<std::mutex> lk(threads[i]->m);
+      threads[i]->cv.wait(lk, [&]{
+        return threads[i]->processed;
+      });
+    }
   }
 }
 
