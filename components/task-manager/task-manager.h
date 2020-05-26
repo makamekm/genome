@@ -27,9 +27,12 @@ class TaskManager {
     void Destroy();
     void Start();
     void End();
-    void AddJob(
-      std::function<void(const double& time, const unsigned int& workerIndex)> job,
+    unsigned int AddJob(
+      std::function<void(const double &time, const unsigned int &workerIndex)> job,
       const unsigned int &preferedIndex = 0,
       const bool &nonFramedThread = false
+    );
+    void RemoveJob(
+      const unsigned int &jobId
     );
 };

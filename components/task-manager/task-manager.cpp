@@ -12,10 +12,18 @@
 static bool isRunning = false;
 static double framePassedTime = 0.0f;
 
+unsigned int getRandomId() {
+  return ((UINT32_MAX - 1) * (rand()/(double)RAND_MAX) );
+}
+
 class WorkerThread {
   private:
     std::thread thread;
     double previousTime = glfwGetTime();
+    struct Job {
+      unsigned int id;
+      std::function<void(const double& time, const unsigned int& workerIndex)> fn;
+    };
 
   public:
     WorkerThread(int index):
@@ -28,7 +36,7 @@ class WorkerThread {
     bool readyToExecute = false;
     bool processed = true;
     unsigned int index = 0;
-    std::vector<std::function<void(const double& time, const unsigned int& workerIndex)>> jobs;
+    std::vector<Job> jobs;
 
     void Run() {
       thread = std::thread(&WorkerThread::RunTask, this);
@@ -47,7 +55,7 @@ class WorkerThread {
         double nowTime = glfwGetTime();
         double timePassed = nowTime - previousTime;
         for (auto& job : jobs) {
-          job(timePassed, this->index);
+          job.fn(timePassed, this->index);
         }
         previousTime = nowTime;
         readyToExecute = false;
@@ -56,8 +64,21 @@ class WorkerThread {
       // std::cout << "Thread stopped: " << index << std::endl;
     }
 
-    void AddJob(std::function<void(const double& time, const unsigned int& workerIndex)> job) {
-      jobs.push_back(job);
+    unsigned int AddJob(std::function<void(const double& time, const unsigned int& workerIndex)> job) {
+      Job j;
+      j.id = getRandomId();
+      j.fn = job;
+      jobs.push_back(j);
+      return j.id;
+    }
+
+    void RemoveJob(const unsigned int& id) {
+      std::vector<Job>::iterator position = std::find_if(jobs.begin(), jobs.end(), [id](Job &j){
+        return j.id == id;
+      });
+      if (position != jobs.end()) {
+        jobs.erase(position);
+      }
     }
 };
 
@@ -91,16 +112,17 @@ TaskManager::TaskManager(unsigned int nonFramedThreads) {
   countThreads();
   createThreads(nonFramedThreads);
 
-  this->AddJob([](const double& time, const unsigned int& workerIndex) {
+  auto id = this->AddJob([](const double& time, const unsigned int& workerIndex) {
     // std::cout << "Hi from thread!" << workerIndex << std::endl;
   });
+  // std::cout << "Hi from thread! " << id << std::endl;
 }
 
 int TaskManager::GetThreadsCount() {
   return threadsCount;
 }
 
-void TaskManager::AddJob(
+unsigned int TaskManager::AddJob(
   std::function<void(const double& time, const unsigned int& workerIndex)> job,
   const unsigned int &preferedIndex,
   const bool &nonFramedThread 
@@ -120,16 +142,23 @@ void TaskManager::AddJob(
   if (preferedIndex > 0) {
     for (auto* candidate : candidates) {
       if (candidate->index >= preferedIndex) {
-        candidate->AddJob(job);
-        return;
+        return candidate->AddJob(job);
       }
     }
   }
 
   if (candidates.size() > 0) {
-    candidates.at(0)->AddJob(job);
+    return candidates.at(0)->AddJob(job);
   } else {
     std::cout << "Job has not been pushed!" << std::endl;
+  }
+
+  return 0;
+}
+
+void TaskManager::RemoveJob(const unsigned int &id) {
+  for (unsigned int i = 0; i < threadsCount; i++) {
+    threads[i]->RemoveJob(id);
   }
 }
 
