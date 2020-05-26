@@ -38,8 +38,8 @@ rm -rf ./build/*
 sudo npm i -g nodemon
 rm -rf ./build && mkdir build
 export DEVELOPMENT_MODE=true
-nodemon --delay 500ms --signal SIGHUP --ignore build/ -e h,cpp,txt --exec "cd build && cmake .. && make all"
-nodemon --signal SIGHUP --watch ./build/genome --exec "./build/genome"
+nodemon --delay 500ms --signal SIGHUP --ignore build/ -e h,cpp,txt --exec "cd build && cmake .. && make all || exit 1"
+nodemon --signal SIGHUP --watch ./build/genome --exec "./build/genome || exit 1"
 ```
 
 # MacOS Vulkan API Issue

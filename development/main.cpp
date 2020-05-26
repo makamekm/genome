@@ -6,6 +6,26 @@
 #include "../components/task-manager/task-manager.h"
 #include "../production/main.h"
 
+double previousTime = glfwGetTime();
+double currentTime = 0;
+int frameCount = 0;
+int frameRate = 0;
+double frameTime = 0;
+
+void measureSpeed(int &frameCount, double &currentTime, double &previousTime, int &frameRate, double &frameTime) {
+	currentTime = glfwGetTime();
+	frameCount++;
+
+	// If a second has passed.
+	if ( currentTime - previousTime >= 1.0 )
+	{
+		frameRate = frameCount;
+		frameTime = 1000.0/double(frameCount);
+		frameCount = 0;
+		previousTime = currentTime;
+	}
+}
+
 namespace Development {
 	ImGuiUtils::ProfilersWindow *profiler;
 
@@ -24,8 +44,9 @@ namespace Development {
 		// Nothing here
 	}
 
-	void Loop(const int &frameRate, const double &frameTime)
+	void Loop(const double &framePassedTime)
 	{
+		measureSpeed(frameCount, currentTime, previousTime, frameRate, frameTime);
     Monitoring::RenderFramerateWindow(frameRate, frameTime);
     Monitoring::RenderTimelineWindow();
     ImGui::ShowDemoWindow();

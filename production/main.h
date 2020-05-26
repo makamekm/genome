@@ -15,7 +15,7 @@ namespace Production {
   void Finish();
 
   // Loop Production
-  void Loop(const int &frameRate, const double &frameTime);
+  void Loop(const double &frameTime);
 
   // Render Production
   void Render();

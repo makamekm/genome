@@ -10,7 +10,7 @@ namespace Development {
   void Finish();
 
   // Loop Development
-  void Loop(const int &frameRate, const double &frameTime);
+  void Loop(const double &framePassedTime);
 
   // Render Development
   void Render();

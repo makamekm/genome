@@ -43,18 +43,10 @@ void MouseWheelCallback( GLFWwindow* window, double x, double y )
 }
 
 // Measure speed
-void measureSpeed(int &frameCount, double &currentTime, double &previousTime, int &frameRate, double &frameTime) {
+void measureSpeed(double &currentTime, double &previousPassedTime, double &framePassedTime) {
     currentTime = glfwGetTime();
-    frameCount++;
-
-    // If a second has passed.
-    if ( currentTime - previousTime >= 1.0 )
-    {
-        frameRate = frameCount;
-        frameTime = 1000.0/double(frameCount);
-        frameCount = 0;
-        previousTime = currentTime;
-    }
+    framePassedTime = currentTime - previousPassedTime;
+    previousPassedTime = currentTime;
 }
 
 int main( int argc, const char * argv[] )
@@ -100,11 +92,9 @@ int main( int argc, const char * argv[] )
 
     std::cout << "The application is ready to loop!" << std::endl;
 
-    double previousTime = glfwGetTime();
+    double previousPassedTime = glfwGetTime();
     double currentTime = 0;
-    int frameCount = 0;
-    int frameRate = 0;
-    double frameTime = 0;
+    double framePassedTime = 0;
 
     ImVec4 clear_color = ImColor(0, 0, 0);
 
@@ -120,7 +110,7 @@ int main( int argc, const char * argv[] )
 
         // --- Monitoring ---
 
-        measureSpeed(frameCount, currentTime, previousTime, frameRate, frameTime);
+        measureSpeed(currentTime, previousPassedTime, framePassedTime);
 
         // Start the Dear ImGui frame
         {
@@ -131,11 +121,11 @@ int main( int argc, const char * argv[] )
 
         // --- Loop ---
 
-        Production::Loop(frameRate, frameTime);
+        Production::Loop(framePassedTime);
 
         // Run Loop
         #ifdef DEVELOPMENT_MODE
-        Development::Loop(frameRate, frameTime);
+        Development::Loop(framePassedTime);
         #endif
 
         // --- Render ---

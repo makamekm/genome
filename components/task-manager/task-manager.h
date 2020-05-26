@@ -16,9 +16,14 @@ struct TaskProfile {
 
 class TaskManager {
   public:
+    TaskManager();
     int GetLastFrameGpuProfilerData();
     int GetLastFrameCpuProfilerData();
+    int GetThreadsCount();
     void EndFrame();
-    void BeginFrame();
+    void BeginFrame(const double& framePassedTime);
     void Render();
+    void Destroy();
+    void Start();
+    void End();
 };

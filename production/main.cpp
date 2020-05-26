@@ -15,10 +15,13 @@ namespace Production {
 	void Init()
 	{
 		taskManager = new TaskManager();
+		taskManager->Start();
 	}
 
 	void Destroy()
 	{
+		taskManager->End();
+		taskManager->Destroy();
 		delete taskManager;
 	}
 
@@ -27,9 +30,9 @@ namespace Production {
 		taskManager->EndFrame();
 	}
 
-	void Loop(const int &frameRate, const double &frameTime)
+	void Loop(const double &framePassedTime)
 	{
-		taskManager->BeginFrame();
+		taskManager->BeginFrame(framePassedTime);
 	}
 
 	void Render()
