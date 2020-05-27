@@ -65,6 +65,7 @@ class WorkerThread {
         previousTime = nowTime;
         readyToExecute = false;
         processed = true;
+        cv.notify_one();
       }
       // std::cout << "Thread stopped: " << index << std::endl;
     }
