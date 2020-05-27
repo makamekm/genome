@@ -17,7 +17,7 @@ struct TaskProfile {
 
 class TaskManager {
   public:
-    TaskManager(unsigned int nonFramedThreads = 1);
+    TaskManager(const unsigned int &nonFramedThreads = 1, const unsigned int &framedThreads = 1);
     int GetLastFrameGpuProfilerData();
     int GetLastFrameCpuProfilerData();
     int GetThreadsCount();
@@ -27,9 +27,13 @@ class TaskManager {
     void Destroy();
     void Start();
     void End();
+    unsigned int AddJobToIndex(
+      std::function<void(const double &time)> job,
+      const unsigned int &preferedIndex,
+      const bool &nonFramedThread
+    );
     unsigned int AddJob(
-      std::function<void(const double &time, const unsigned int &workerIndex)> job,
-      const unsigned int &preferedIndex = 0,
+      std::function<void(const double &time)> job,
       const bool &nonFramedThread = false
     );
     void RemoveJob(

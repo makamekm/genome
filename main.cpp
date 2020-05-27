@@ -106,6 +106,12 @@ int main( int argc, const char * argv[] )
 
     while (!glfwWindowShouldClose(window))
     {
+        if (glfwGetWindowAttrib(window, GLFW_ICONIFIED))
+        {
+            glfwWaitEvents();
+            continue;
+        }
+
         glfwPollEvents();
 
         // --- Monitoring ---
