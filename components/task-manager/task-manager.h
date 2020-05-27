@@ -29,8 +29,8 @@ class TaskManager {
     void End();
     unsigned int AddJobToIndex(
       std::function<void(const double &time)> job,
-      const unsigned int &preferedIndex,
-      const bool &nonFramedThread
+      const unsigned int &preferedIndex = 0,
+      const bool &nonFramedThread = false
     );
     unsigned int AddJob(
       std::function<void(const double &time)> job,

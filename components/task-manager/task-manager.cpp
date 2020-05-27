@@ -123,9 +123,9 @@ TaskManager::TaskManager(const unsigned int &nonFramedThreads, const unsigned in
   countThreads();
   createThreads(nonFramedThreads, framedThreads);
 
-  auto id = this->AddJob([](const double& time) {
-    // std::cout << "Hi from thread!" << workerIndex << std::endl;
-  });
+  // auto id = this->AddJob([](const double& time) {
+  //   // std::cout << "Hi from thread!" << workerIndex << std::endl;
+  // });
 }
 
 int TaskManager::GetThreadsCount() {
