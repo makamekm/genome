@@ -48,6 +48,7 @@ namespace Development {
 	{
 		measureSpeed(frameCount, currentTime, previousTime, frameRate, frameTime);
     Monitoring::RenderFramerateWindow(frameRate, frameTime);
+    Monitoring::RenderCPUAndMemoryWindow();
     Monitoring::RenderTimelineWindow();
     ImGui::ShowDemoWindow();
 
