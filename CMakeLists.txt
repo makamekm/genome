@@ -18,6 +18,9 @@ IF (APPLE)
     include_directories($ENV{VULKAN_SDK}/include)
 ENDIF()
 
+# file(GLOB VULKAN_LIBRARIES "$ENV{VULKAN_SDK}/lib/*.dylib")
+# message("VULKAN_LIBRARIES = ${VULKAN_LIBRARIES}")
+
 include_directories("imgui")
 include_directories("imgui/examples")
 include_directories( ${OPENGL_INCLUDE_DIRS} )
@@ -100,7 +103,7 @@ add_custom_command(
             ${CMAKE_CURRENT_BINARY_DIR}/resources/verdana.ttf
 )
 
-target_link_libraries( genome ${OPENGL_LIBRARIES} glfw ${GLFW_LIBRARIES} )
+target_link_libraries( genome ${OPENGL_LIBRARIES} glfw ${GLFW_LIBRARIES} vulkan ${VULKAN_LIBRARIES} )
 
 if( MSVC )
     if( ${CMAKE_VERSION} VERSION_LESS "3.6.0" )

@@ -57,3 +57,5 @@ export DYLD_LIBRARY_PATH=$VULKAN_SDK/lib:$DYLD_LIBRARY_PATH
 export VULKAN_FRAMEWORK_PATH=$VULKAN_SDK/Frameworks
 export DYLD_FRAMEWORK_PATH=$VULKAN_FRAMEWORK_PATH:$DYLD_FRAMEWORK_PATH
 ```
+
+https://vulkan-tutorial.com/Development_environment

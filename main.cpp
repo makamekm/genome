@@ -1,8 +1,18 @@
 #include <stdlib.h>
 #include <iostream>
 
-#define GLFW_INCLUDE_VULKAN
+// #define GLFW_INCLUDE_VULKAN
+// #include <vulkan/vulkan.h>
+// #include <vulkan/vulkan_core.h>
+// #include <vulkan/vk_platform.h>
+// #include <vulkan/vk_sdk_platform.h>
+#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
+
+// #define GLM_FORCE_RADIANS
+// #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+// #include <glm/vec4.hpp>
+// #include <glm/mat4x4.hpp>
 
 #include <imgui.h>
 #include "imgui_impl_glfw.h"
@@ -15,6 +25,9 @@
 #include "production/main.h"
 
 #include "components/style/style.h"
+
+// static char const * AppName = "01_InitInstance";
+// static char const * EngineName = "Vulkan.hpp";
 
 // Catch Main Window Events
 void WindowResizeCallback( GLFWwindow* window, int width, int height ) {
@@ -49,6 +62,8 @@ void measureSpeed(double &currentTime, double &previousPassedTime, double &frame
     previousPassedTime = currentTime;
 }
 
+VkInstance instance;
+
 int main( int argc, const char * argv[] )
 {
     // Check GLFW
@@ -63,6 +78,39 @@ int main( int argc, const char * argv[] )
         std::cout << "Vulkan API is not available!" << std::endl;
         exit(1);
     }
+
+    VkApplicationInfo appInfo{};
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = "Hello Triangle";
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.pEngineName = "No Engine";
+    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_0;
+
+    VkInstanceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    createInfo.pApplicationInfo = &appInfo;
+
+    uint32_t glfwExtensionCount = 0;
+    const char** glfwExtensions;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    createInfo.enabledExtensionCount = glfwExtensionCount;
+    createInfo.ppEnabledExtensionNames = glfwExtensions;
+    createInfo.enabledLayerCount = 0;
+    
+    VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
+
+    if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create instance!");
+    }
+
+    // uint32_t extensionCount = 0;
+    // vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+
+    // std::cout << extensionCount << " extensions supported\n";
+
+	// glfwDefaultWindowHints();
+	// glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Comment out this if you need OpenGL also
 
     // Create Main Window
     // GLFWwindow* window = glfwCreateWindow(1280, 720, "This is a simple GLFW Example", glfwGetPrimaryMonitor(), NULL);
@@ -166,6 +214,9 @@ int main( int argc, const char * argv[] )
     Development::Destroy();
     #endif
 
+
+	// vkDestroySurfaceKHR((VkInstance)instanceCreateInfo, VkSurfaceKHR(surf), nullptr); //vkcpp seems have no destructor for surface object
+    vkDestroyInstance(instance, nullptr);
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
